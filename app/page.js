@@ -21,12 +21,18 @@ export default function Home() {
 
     useEffect(() => {
         setMounted(true)
-        const storedImages = localStorage.getItem('galleryImages')
-        if (storedImages) {
+        const fetchImages = async () => {
             try {
-                setImages(JSON.parse(storedImages))
-            } catch (e) { }
+                const res = await fetch('/api/images')
+                const data = await res.json()
+                if (data.success && data.data && data.data.length > 0) {
+                    setImages(data.data)
+                }
+            } catch (error) {
+                console.error('Failed to fetch images from API', error)
+            }
         }
+        fetchImages()
     }, [])
 
     if (!mounted) return null

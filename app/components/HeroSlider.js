@@ -36,14 +36,18 @@ export default function HeroSlider() {
 
     useEffect(() => {
         setMounted(true)
-        const storedSlides = localStorage.getItem('heroSlides')
-        if (storedSlides) {
+        const fetchSlides = async () => {
             try {
-                setSlides(JSON.parse(storedSlides))
-            } catch (e) {
-                console.error('Failed to parse slides', e)
+                const res = await fetch('/api/slides')
+                const data = await res.json()
+                if (data.success && data.data && data.data.length > 0) {
+                    setSlides(data.data)
+                }
+            } catch (error) {
+                console.error('Failed to fetch slides', error)
             }
         }
+        fetchSlides()
     }, [])
 
     if (!mounted) return null // Prevent hydration mismatch

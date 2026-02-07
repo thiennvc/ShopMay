@@ -1,3 +1,4 @@
+
 'use client'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -16,65 +17,41 @@ export default function Admin() {
     const [newImage, setNewImage] = useState({ src: '', category: 'aodai' })
     const [filePreview, setFilePreview] = useState(null)
 
-    // Mock Data
+    // Data State
     const [posts, setPosts] = useState([
         { id: 1, title: 'Xu hướng áo dài 2024', date: '2023-10-01', status: 'Published' },
         { id: 2, title: 'Cách chọn vải may đầm công sở', date: '2023-09-15', status: 'Draft' },
     ])
-    const [images, setImages] = useState([
-        { id: 1, src: 'https://images.unsplash.com/photo-1599707367072-cd6ad66aa1a8?q=80&w=200', category: 'aodai' },
-        { id: 2, src: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=200', category: 'office' },
-    ])
-
-    // Slides Data
-    const [slides, setSlides] = useState([
-        {
-            id: 1,
-            image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=2000&auto=format&fit=crop',
-            title: 'Vẻ Đẹp Á Đông',
-            subtitle: 'Tinh tế trong từng đường kim mũi chỉ'
-        },
-        {
-            id: 2,
-            image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2000&auto=format&fit=crop',
-            title: 'Thời Trang Công Sở',
-            subtitle: 'Thanh lịch, hiện đại và sang trọng'
-        },
-        {
-            id: 3,
-            image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2000&auto=format&fit=crop',
-            title: 'Thiết Kế Độc Quyền',
-            subtitle: 'Mỗi bộ trang phục là một tác phẩm nghệ thuật'
-        }
-    ])
+    const [images, setImages] = useState([])
+    const [slides, setSlides] = useState([])
     const [newSlide, setNewSlide] = useState({ image: '', title: '', subtitle: '' })
+    const [isLoading, setIsLoading] = useState(false)
+
+    // Fetch Data
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            // Fetch Images
+            const imgRes = await fetch('/api/images')
+            const imgData = await imgRes.json()
+            if (imgData.success) setImages(imgData.data)
+
+            // Fetch Slides
+            const slideRes = await fetch('/api/slides')
+            const slideData = await slideRes.json()
+            if (slideData.success) setSlides(slideData.data)
+        } catch (error) {
+            console.error('Error fetching data:', error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     useEffect(() => {
-        // Load slides
-        const storedSlides = localStorage.getItem('heroSlides')
-        if (storedSlides) {
-            try {
-                setSlides(JSON.parse(storedSlides))
-            } catch (e) { }
+        if (isLoggedIn) {
+            fetchData()
         }
-        // Load images
-        const storedImages = localStorage.getItem('galleryImages')
-        if (storedImages) {
-            try {
-                setImages(JSON.parse(storedImages))
-            } catch (e) { }
-        }
-    }, [])
-
-    const saveSlides = (updatedSlides) => {
-        setSlides(updatedSlides)
-        localStorage.setItem('heroSlides', JSON.stringify(updatedSlides))
-    }
-
-    const saveImages = (updatedImages) => {
-        setImages(updatedImages)
-        localStorage.setItem('galleryImages', JSON.stringify(updatedImages))
-    }
+    }, [isLoggedIn])
 
     const handleLogin = (e) => {
         e.preventDefault()
@@ -86,22 +63,67 @@ export default function Admin() {
         }
     }
 
+    // --- Content Handlers ---
+
+    // Posts (Mock for now)
     const handleDeletePost = (id) => {
         if (confirm('Bạn có chắc muốn xoá bài viết này?')) {
             setPosts(posts.filter(p => p.id !== id))
         }
     }
 
-    const handleDeleteImage = (id) => {
-        if (confirm('Bạn có chắc muốn xoá hình này?')) {
-            const updated = images.filter(img => img.id !== id)
-            saveImages(updated)
+    // SLIDES Logic
+    const handleAddSlide = async () => {
+        if (!newSlide.image || !newSlide.title) {
+            alert('Vui lòng nhập Link ảnh và Tiêu đề')
+            return
+        }
+
+        try {
+            const res = await fetch('/api/slides', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newSlide)
+            })
+            const data = await res.json()
+
+            if (data.success) {
+                setSlides([...slides, data.data])
+                setNewSlide({ image: '', title: '', subtitle: '' })
+                alert('Thêm slide thành công!')
+            } else {
+                alert('Lỗi khi thêm slide: ' + data.error)
+            }
+        } catch (error) {
+            alert('Lỗi kết nối: ' + error.message)
         }
     }
 
+    const handleDeleteSlide = async (id) => {
+        if (confirm('Xoá slide này?')) {
+            try {
+                const res = await fetch(`/api/slides?id=${id}`, { method: 'DELETE' })
+                const data = await res.json()
+                if (data.success) {
+                    setSlides(slides.filter(s => s._id !== id))
+                } else {
+                    alert('Lỗi xoá slide')
+                }
+            } catch (error) {
+                alert('Lỗi kết nối')
+            }
+        }
+    }
+
+    // IMAGES Logic
     const handleFileChange = (e) => {
         const file = e.target.files[0]
         if (file) {
+            // Check file size (limit to 2MB for base64 safety)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File quá lớn! Vui lòng chọn ảnh dưới 2MB hoặc dùng Link ảnh.')
+                return
+            }
             const reader = new FileReader()
             reader.onloadend = () => {
                 setFilePreview(reader.result)
@@ -111,32 +133,46 @@ export default function Admin() {
         }
     }
 
-    const handleAddImage = () => {
+    const handleAddImage = async () => {
         if (!newImage.src) {
             alert('Vui lòng chọn hình hoặc nhập URL')
             return
         }
-        const updated = [...images, { ...newImage, id: Date.now() }]
-        saveImages(updated)
-        setNewImage({ src: '', category: 'aodai' })
-        setFilePreview(null)
-        setShowUploadModal(false)
-    }
 
-    const handleAddSlide = () => {
-        if (!newSlide.image || !newSlide.title) {
-            alert('Vui lòng nhập Link ảnh và Tiêu đề')
-            return
+        try {
+            const res = await fetch('/api/images', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newImage)
+            })
+            const data = await res.json()
+
+            if (data.success) {
+                setImages([...images, data.data])
+                setNewImage({ src: '', category: 'aodai' })
+                setFilePreview(null)
+                setShowUploadModal(false)
+                alert('Thêm hình ảnh thành công!')
+            } else {
+                alert('Lỗi thêm hình: ' + (data.error || 'Server Error'))
+            }
+        } catch (error) {
+            alert('Lỗi kết nối: ' + error.message)
         }
-        const updated = [...slides, { ...newSlide, id: Date.now() }]
-        saveSlides(updated)
-        setNewSlide({ image: '', title: '', subtitle: '' })
     }
 
-    const handleDeleteSlide = (id) => {
-        if (confirm('Xoá slide này?')) {
-            const updated = slides.filter(s => s.id !== id)
-            saveSlides(updated)
+    const handleDeleteImage = async (id) => {
+        if (confirm('Bạn có chắc muốn xoá hình này?')) {
+            try {
+                const res = await fetch(`/api/images?id=${id}`, { method: 'DELETE' })
+                if (res.ok) {
+                    setImages(images.filter(img => img._id !== id))
+                } else {
+                    alert('Không thể xoá hình')
+                }
+            } catch (error) {
+                alert('Lỗi kết nối')
+            }
         }
     }
 
@@ -205,6 +241,8 @@ export default function Admin() {
 
             {/* Content */}
             <div style={{ flex: 1, padding: '40px', background: '#f9f9f9', overflowY: 'auto' }}>
+
+                {isLoading && <p>Đang tải dữ liệu...</p>}
 
                 {activeTab === 'posts' && (
                     <div>
@@ -323,7 +361,7 @@ export default function Admin() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
                             {images.map(img => (
-                                <div key={img.id} style={{ background: 'white', padding: '10px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
+                                <div key={img._id || img.id} style={{ background: 'white', padding: '10px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
                                     <div style={{ position: 'relative', height: '150px', marginBottom: '10px', borderRadius: '4px', overflow: 'hidden' }}>
                                         <Image src={img.src} fill style={{ objectFit: 'cover' }} alt="img" />
                                     </div>
@@ -331,7 +369,7 @@ export default function Admin() {
                                         <span style={{ fontSize: '0.8rem', color: '#888' }}>
                                             {img.category === 'aodai' ? 'Áo Dài' : img.category === 'office' ? 'Công Sở' : 'Thiết kế'}
                                         </span>
-                                        <button onClick={() => handleDeleteImage(img.id)} style={{ border: 'none', background: 'transparent', color: 'red', cursor: 'pointer' }}><FiTrash2 /></button>
+                                        <button onClick={() => handleDeleteImage(img._id || img.id)} style={{ border: 'none', background: 'transparent', color: 'red', cursor: 'pointer' }}><FiTrash2 /></button>
                                     </div>
                                 </div>
                             ))}
@@ -374,7 +412,7 @@ export default function Admin() {
                         {/* List Slides */}
                         <div style={{ display: 'grid', gap: '20px' }}>
                             {slides.map((slide, index) => (
-                                <div key={slide.id} style={{ display: 'flex', background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', alignItems: 'center', gap: '20px' }}>
+                                <div key={slide._id || slide.id} style={{ display: 'flex', background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', alignItems: 'center', gap: '20px' }}>
                                     <div style={{ position: 'relative', width: '150px', height: '80px', flexShrink: 0 }}>
                                         <Image src={slide.image} alt="slide" fill style={{ objectFit: 'cover', borderRadius: '4px' }} />
                                     </div>
@@ -383,7 +421,7 @@ export default function Admin() {
                                         <p style={{ margin: '5px 0 0', color: '#666' }}>{slide.subtitle}</p>
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px' }}>
-                                        <button onClick={() => handleDeleteSlide(slide.id)} style={{ border: '1px solid red', background: 'white', color: 'red', padding: '5px 10px', cursor: 'pointer', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                        <button onClick={() => handleDeleteSlide(slide._id || slide.id)} style={{ border: '1px solid red', background: 'white', color: 'red', padding: '5px 10px', cursor: 'pointer', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                                             <FiTrash2 /> Xoá
                                         </button>
                                     </div>
