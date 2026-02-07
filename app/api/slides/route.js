@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs'; // Use Node.js runtime instead of Edge
+export const runtime = 'edge';
 
 export async function GET() {
     try {
