@@ -1,44 +1,54 @@
 
-import dbConnect from '../../../lib/db';
-import Image from '../../../models/Image';
+import clientPromise from '../../../lib/db';
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
+export const runtime = 'nodejs'; // Use Node.js runtime instead of Edge for MongoDB
 
 export async function GET() {
-    await dbConnect();
     try {
-        const images = await Image.find({});
-        return NextResponse.json({ success: true, data: images });
+        const client = await clientPromise;
+        const db = client.db('shopmay');
+        const images = await db.collection('images').find({}).toArray();
+        // Convert _id to string for frontend compatibility if needed
+        const data = images.map(img => ({ ...img, id: img._id.toString() }));
+        return NextResponse.json({ success: true, data: data });
     } catch (error) {
-        return NextResponse.json({ success: false }, { status: 400 });
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }
 
 export async function POST(request) {
-    await dbConnect();
     try {
+        const client = await clientPromise;
+        const db = client.db('shopmay');
         const body = await request.json();
-        const image = await Image.create(body);
-        return NextResponse.json({ success: true, data: image }, { status: 201 });
+
+        // Add timestamp
+        const newImage = { ...body, createdAt: new Date() };
+
+        const result = await db.collection('images').insertOne(newImage);
+        return NextResponse.json({ success: true, data: { ...newImage, _id: result.insertedId, id: result.insertedId.toString() } }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
 }
 
 export async function DELETE(request) {
-    await dbConnect();
     try {
-        // Expect query param ?id=<id>
         const url = new URL(request.url);
         const id = url.searchParams.get('id');
 
         if (!id) throw new Error('No ID provided');
 
-        const deletedImage = await Image.findByIdAndDelete(id);
-        if (!deletedImage) {
-            return NextResponse.json({ success: false }, { status: 400 });
+        const client = await clientPromise;
+        const db = client.db('shopmay');
+
+        const result = await db.collection('images').deleteOne({ _id: new ObjectId(id) });
+
+        if (result.deletedCount === 0) {
+            return NextResponse.json({ success: false, error: 'Not found' }, { status: 404 });
         }
         return NextResponse.json({ success: true, data: {} });
     } catch (error) {
