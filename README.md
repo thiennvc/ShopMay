@@ -1,6 +1,6 @@
-# 🌸 HƯƠNG SẮC VIỆT - Website Shop Thời Trang Cao Cấp
+# 🌸 NHÀ MAY KIM ĐÍNH - Website Shop Thời Trang Cao Cấp
 
-Chào mừng bạn đến với bộ mã nguồn website **Hương Sắc Việt**. Tài liệu này sẽ hướng dẫn bạn chi tiết từ cách cài đặt, vận hành trên máy cá nhân cho đến cách tùy chỉnh nội dung và đưa website lên mạng.
+Chào mừng bạn đến với bộ mã nguồn website **NHÀ MAY KIM ĐÍNH**. Tài liệu này sẽ hướng dẫn bạn chi tiết từ cách cài đặt, vận hành trên máy cá nhân cho đến cách tùy chỉnh nội dung và đưa website lên mạng.
 
 ---
 
