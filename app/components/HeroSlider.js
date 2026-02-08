@@ -19,13 +19,15 @@ const defaultSlides = [
     },
     {
         id: 2,
-        image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2000&auto=format&fit=crop',
-        title: 'Thời Trang Công Sở',
+        //image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2000&auto=format&fit=crop',
+        image: 'https://afamilycdn.com/150157425591193600/2023/11/22/avaghjklkl-17006695852151694889705.jpg',
+        title: 'Thời Trang thanh thoát sang trọng',
         subtitle: 'Thanh lịch, hiện đại và sang trọng'
     },
     {
         id: 3,
-        image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2000&auto=format&fit=crop',
+        //image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=2000&auto=format&fit=crop',
+        image: 'https://blissfulbrides.vn/wp-content/uploads/2025/03/A%CC%81o-Da%CC%80i-Ha%CC%80-Cu%CC%81c-5.jpg',
         title: 'Thiết Kế Độc Quyền',
         subtitle: 'Mỗi bộ trang phục là một tác phẩm nghệ thuật'
     }
