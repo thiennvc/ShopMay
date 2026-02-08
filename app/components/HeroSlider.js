@@ -58,7 +58,9 @@ export default function HeroSlider() {
                                 src={slide.image}
                                 alt={slide.title}
                                 fill
-                                style={{ objectFit: 'cover' }}
+                                sizes="100vw"
+                                quality={100}
+                                style={{ objectFit: 'cover', objectPosition: 'center' }}
                                 priority
                             />
                             <div style={{
