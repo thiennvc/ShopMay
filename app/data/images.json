@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": 1,
+    "src": "/images/aodai/mau-1.jpg",
+    "category": "aodai",
+    "title": "Mau 1"
+  },
+  {
+    "id": 2,
+    "src": "/images/aodai/mau-2.jpg",
+    "category": "aodai",
+    "title": "Mau 2"
+  },
+  {
+    "id": 3,
+    "src": "/images/aodai/mau-3.jpg",
+    "category": "aodai",
+    "title": "Mau 3"
+  },
+  {
+    "id": 4,
+    "src": "/images/office/mau-1.jpg",
+    "category": "office",
+    "title": "Mau 1"
+  },
+  {
+    "id": 5,
+    "src": "/images/office/mau-2.jpg",
+    "category": "office",
+    "title": "Mau 2"
+  },
+  {
+    "id": 6,
+    "src": "/images/office/mau-3.jpg",
+    "category": "office",
+    "title": "Mau 3"
+  }
+]
