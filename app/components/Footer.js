@@ -26,7 +26,7 @@ export default function Footer() {
                         <ul style={{ listStyle: 'none', color: 'var(--text-light)' }}>
                             <li style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', gap: '10px' }}>
                                 <FaMapMarkerAlt style={{ color: 'var(--accent)' }} />
-                                538 Quang Trung, Phường Thông Tây Hội, TP.HCM
+                                538 Quang Trung, Phường Thông Tây Hội, TP Hồ Chí Minh
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', gap: '10px' }}>
                                 <FaPhone style={{ color: 'var(--accent)' }} />
@@ -34,7 +34,7 @@ export default function Footer() {
                             </li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <FaEnvelope style={{ color: 'var(--accent)' }} />
-                                contact dinh.hokim@gmail.com
+                                dinh.hokim@gmail.com
                             </li>
                         </ul>
                     </div>
