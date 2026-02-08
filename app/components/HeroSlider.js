@@ -56,15 +56,30 @@ export default function HeroSlider() {
                 {slides.map((slide) => (
                     <SwiperSlide key={slide.id}>
                         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                            <Image
-                                src={slide.image}
-                                alt={slide.title}
-                                fill
-                                sizes="100vw"
-                                quality={100}
-                                style={{ objectFit: 'cover', objectPosition: 'center' }}
-                                priority
-                            />
+                            {/* Blurred Background Layer */}
+                            <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+                                <Image
+                                    src={slide.image}
+                                    alt=""
+                                    fill
+                                    quality={50}
+                                    style={{ objectFit: 'cover', filter: 'blur(20px)', transform: 'scale(1.1)', opacity: 0.5 }}
+                                />
+                                <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.5)' }}></div>
+                            </div>
+
+                            {/* Main Image Layer */}
+                            <div style={{ position: 'relative', width: '100%', height: '100%', zIndex: 1 }}>
+                                <Image
+                                    src={slide.image}
+                                    alt={slide.title}
+                                    fill
+                                    sizes="100vw"
+                                    quality={100}
+                                    style={{ objectFit: 'contain', objectPosition: 'center' }}
+                                    priority
+                                />
+                            </div>
                             <div style={{
                                 position: 'absolute',
                                 top: 0,
