@@ -6,14 +6,11 @@ import { useState, useEffect } from 'react'
 
 import localImages from './data/images.json'
 
-const defaultImages = [
-    { id: 1, src: 'https://images.unsplash.com/photo-1599707367072-cd6ad66aa1a8?q=80&w=800', category: 'aodai', title: 'Áo dài đỏ truyền thống' },
-    { id: 2, src: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800', category: 'office', title: 'Đầm công sở thanh lịch' },
-]
+const defaultImages = []
 
 export default function Home() {
-    // Merge default images with local images from folder
-    const [images, setImages] = useState([...defaultImages, ...localImages])
+    // Merge default images (now empty) with local images from folder
+    const [images, setImages] = useState([...localImages])
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
