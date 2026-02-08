@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/generate-images.js && next dev",
+    "build": "node scripts/generate-images.js && next build",
+    "gen": "node scripts/generate-images.js",
     "start": "next start",
     "lint": "next lint"
   },

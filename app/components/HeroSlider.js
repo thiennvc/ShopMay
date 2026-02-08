@@ -36,18 +36,6 @@ export default function HeroSlider() {
 
     useEffect(() => {
         setMounted(true)
-        const fetchSlides = async () => {
-            try {
-                const res = await fetch('/api/slides')
-                const data = await res.json()
-                if (data.success && data.data && data.data.length > 0) {
-                    setSlides(data.data)
-                }
-            } catch (error) {
-                console.error('Failed to fetch slides', error)
-            }
-        }
-        fetchSlides()
     }, [])
 
     if (!mounted) return null // Prevent hydration mismatch

@@ -4,35 +4,20 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
+import localImages from './data/images.json'
+
 const defaultImages = [
     { id: 1, src: 'https://images.unsplash.com/photo-1599707367072-cd6ad66aa1a8?q=80&w=800', category: 'aodai', title: 'Áo dài đỏ truyền thống' },
     { id: 2, src: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=800', category: 'office', title: 'Đầm công sở thanh lịch' },
-    { id: 3, src: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=800', category: 'aodai', title: 'Áo dài trắng cách tân' },
-    { id: 4, src: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800', category: 'office', title: 'Set váy vest' },
-    { id: 5, src: 'https://images.unsplash.com/photo-1550614000-4b9519e07d09?q=80&w=800', category: 'custom', title: 'Thiết kế dạ hội' },
-    { id: 6, src: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=800', category: 'custom', title: 'Váy cưới nhẹ nhàng' },
-    { id: 7, src: 'https://images.unsplash.com/photo-1557754101-7fa11c341334?q=80&w=800', category: 'aodai', title: 'Áo dài lụa tơ tằm' },
-    { id: 8, src: 'https://images.unsplash.com/photo-1616165509205-02758169992d?q=80&w=800', category: 'office', title: 'Váy liền thân cao cấp' },
 ]
 
 export default function Home() {
-    const [images, setImages] = useState(defaultImages)
+    // Merge default images with local images from folder
+    const [images, setImages] = useState([...defaultImages, ...localImages])
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
         setMounted(true)
-        const fetchImages = async () => {
-            try {
-                const res = await fetch('/api/images')
-                const data = await res.json()
-                if (data.success && data.data && data.data.length > 0) {
-                    setImages(data.data)
-                }
-            } catch (error) {
-                console.error('Failed to fetch images from API', error)
-            }
-        }
-        fetchImages()
     }, [])
 
     if (!mounted) return null
