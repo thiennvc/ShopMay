@@ -12,7 +12,8 @@ import { useState, useEffect } from 'react'
 const defaultSlides = [
     {
         id: 1,
-        image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=2000&auto=format&fit=crop',
+        #image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=2000&auto=format&fit=crop',
+        image: 'https://wego.net.vn/wp-content/uploads/2025/08/chan-vay-cong-so-dong-phu-2.jpg',
         title: 'Vẻ Đẹp Á Đông',
         subtitle: 'Tinh tế trong từng đường kim mũi chỉ'
     },
